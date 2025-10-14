@@ -100,12 +100,18 @@ std::string TicTacToe::getBoardString() {
 
 std::pair<int, int> TicTacToe::getAIMove() {
     std::string boardStr = getBoardString();
-    std::string command = "python3 ../python/ai_engine.py '" + boardStr + "'";
     
-    FILE* pipe = popen(command.c_str(), "r");
+    #ifdef _WIN32
+        std::string command = "python ../python/ai_engine.py \"" + boardStr + "\"";
+        FILE* pipe = _popen(command.c_str(), "r");
+    #else
+        std::string command = "python3 ../python/ai_engine.py '" + boardStr + "'";
+        FILE* pipe = popen(command.c_str(), "r");
+    #endif
+    
     if(!pipe) {
         std::cerr << "Error: Cannot execute Python AI engine!" << std::endl;
-        return {-1, -1};
+        return std::make_pair(-1, -1);
     }
     
     char buffer[128];
@@ -115,15 +121,19 @@ std::pair<int, int> TicTacToe::getAIMove() {
         result += buffer;
     }
     
-    pclose(pipe);
+    #ifdef _WIN32
+        _pclose(pipe);
+    #else
+        pclose(pipe);
+    #endif
     
     int row, col;
     if(sscanf(result.c_str(), "%d,%d", &row, &col) != 2) {
         std::cerr << "Error: Invalid AI response!" << std::endl;
-        return {-1, -1};
+        return std::make_pair(-1, -1);
     }
     
-    return {row, col};
+    return std::make_pair(row, col);
 }
 
 std::pair<int, int> TicTacToe::getHumanMove() {
@@ -141,7 +151,7 @@ std::pair<int, int> TicTacToe::getHumanMove() {
         }
         
         if(row >= 0 && row <= 2 && col >= 0 && col <= 2 && board[row][col] == EMPTY) {
-            return {row, col};
+            return std::make_pair(row, col);
         }
         
         std::cout << "Invalid move! Cell must be empty and in range 0-2." << std::endl;
@@ -160,7 +170,11 @@ void TicTacToe::playGame() {
     
     while(true) {
         std::cout << "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" << std::endl;
-        auto [hRow, hCol] = getHumanMove();
+        
+        std::pair<int, int> humanMove = getHumanMove();
+        int hRow = humanMove.first;
+        int hCol = humanMove.second;
+        
         makeMove(hRow, hCol, HUMAN);
         displayBoard();
         
@@ -177,7 +191,10 @@ void TicTacToe::playGame() {
         
         std::cout << "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" << std::endl;
         std::cout << "🤖 AI is thinking..." << std::endl;
-        auto [aRow, aCol] = getAIMove();
+        
+        std::pair<int, int> aiMove = getAIMove();
+        int aRow = aiMove.first;
+        int aCol = aiMove.second;
         
         if(aRow == -1 || aCol == -1) {
             std::cerr << "Fatal error: AI failed to make a move!" << std::endl;
