@@ -1,6 +1,7 @@
 #include "game.h"
 #include <sstream>
 #include <limits>
+#include <cstdio>
 
 TicTacToe::TicTacToe() {
     initBoard();
@@ -100,14 +101,9 @@ std::string TicTacToe::getBoardString() {
 
 std::pair<int, int> TicTacToe::getAIMove() {
     std::string boardStr = getBoardString();
+    std::string command = "python ../python/ai_engine.py \"" + boardStr + "\"";
     
-    #ifdef _WIN32
-        std::string command = "python ../python/ai_engine.py \"" + boardStr + "\"";
-        FILE* pipe = _popen(command.c_str(), "r");
-    #else
-        std::string command = "python3 ../python/ai_engine.py '" + boardStr + "'";
-        FILE* pipe = popen(command.c_str(), "r");
-    #endif
+    FILE* pipe = popen(command.c_str(), "r");
     
     if(!pipe) {
         std::cerr << "Error: Cannot execute Python AI engine!" << std::endl;
@@ -121,11 +117,7 @@ std::pair<int, int> TicTacToe::getAIMove() {
         result += buffer;
     }
     
-    #ifdef _WIN32
-        _pclose(pipe);
-    #else
-        pclose(pipe);
-    #endif
+    pclose(pipe);
     
     int row, col;
     if(sscanf(result.c_str(), "%d,%d", &row, &col) != 2) {
