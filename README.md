@@ -22,6 +22,7 @@ A Tic-Tac-Toe game where you compete against an **AI that never loses**. The AI 
 - ✅ Multi-language integration (C++ ↔ Python)
 - ✅ Game theory application
 - ✅ Clean software architecture
+- ✅ User-friendly interface with comprehensive error handling
 
 ---
 
@@ -29,8 +30,9 @@ A Tic-Tac-Toe game where you compete against an **AI that never loses**. The AI 
 
 - ✨ **Unbeatable AI** - Minimax algorithm ensures perfect play
 - ⚡ **High Performance** - C++ for speed, Python for AI
-- 🎯 **Clean UI** - ASCII art terminal interface
-- 💪 **Robust** - Input validation and error handling
+- 🎯 **Clean UI** - ASCII art terminal interface with clear instructions
+- 💪 **Robust** - Comprehensive input validation and error handling
+- 🎮 **User-Friendly** - Intuitive 1-3 numbering system
 
 ---
 
@@ -46,16 +48,16 @@ A Tic-Tac-Toe game where you compete against an **AI that never loses**. The AI 
 ```bash
 git clone https://github.com/MagnusArcher/tic-tac-toe-ai.git
 cd tic-tac-toe-ai/cpp
-make
+g++ -std=c++17 -o tic_tac_toe game.cpp
 ./tic_tac_toe
 ```
 
-### Manual Compilation
+### For Windows
 
-```bash
-cd cpp
-g++ -std=c++17 -o tic_tac_toe game.cpp
-./tic_tac_toe
+```cmd
+cd tic-tac-toe-ai\cpp
+g++ -std=c++17 -o tic_tac_toe.exe game.cpp
+tic_tac_toe.exe
 ```
 
 ---
@@ -65,20 +67,73 @@ g++ -std=c++17 -o tic_tac_toe game.cpp
 - **You**: Play as **O** (first move)
 - **AI**: Plays as **X**
 - **Goal**: Get 3 in a row
-- **Input**: Enter row and column (0-2)
+- **Input**: Enter row and column (1-3) separated by space
+
+### Input Format
 
 ```
+Your turn (O)! Enter row and column (1-3): 2 2
+```
+
+- First number: Row (1-3)
+- Second number: Column (1-3)
+- Separate with space
+
+### Example Gameplay
+
+```
+╔════════════════════════════════════════╗
+║   TIC TAC TOE - AI CHALLENGE          ║
+║                                        ║
+║   You: O  |  AI: X                    ║
+║   Can you beat the unbeatable AI?     ║
+╚════════════════════════════════════════╝
+
+💡 Instructions:
+   - Enter row and column as two numbers (1-3)
+   - Example: Type '1 2' and press Enter
+   - Row first, then column
+
   === TIC TAC TOE ===
-     0   1   2
+     1   2   3
    +---+---+---+
- 0 |   |   |   |
-   +---+---+---+
- 1 |   | O |   |
+ 1 |   |   |   |
    +---+---+---+
  2 |   |   |   |
    +---+---+---+
+ 3 |   |   |   |
+   +---+---+---+
 
-Your turn (O)! Enter row and column (0-2): 
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Your turn (O)! Enter row and column (1-3): 2 2
+
+✓ You played: (2, 2)
+
+  === TIC TAC TOE ===
+     1   2   3
+   +---+---+---+
+ 1 |   |   |   |
+   +---+---+---+
+ 2 |   | O |   |
+   +---+---+---+
+ 3 |   |   |   |
+   +---+---+---+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🤖 AI is thinking...
+🤖 AI played: (1, 1)
+```
+
+### Error Handling
+
+The game handles various input errors:
+
+```
+❌ Error: No input provided
+❌ Error: Invalid input format
+❌ Error: Too many inputs
+❌ Error: Numbers must be between 1 and 3
+❌ Error: Cell is already occupied
 ```
 
 ---
@@ -99,13 +154,15 @@ C++ Game Engine          Python AI Engine
 
 **C++ → Python:**
 ```cpp
-python3 ai_engine.py "XO  O X  "
+system("python ai_engine.py \"XO  O X  \" > ai_output.txt");
 ```
 
 **Python → C++:**
 ```python
 print(f"{row},{col}")
 ```
+
+The C++ program reads the AI's move from a temporary file (`ai_output.txt`) which is automatically deleted after reading.
 
 ---
 
@@ -120,7 +177,7 @@ tic-tac-toe-ai/
 │   └── ai_engine.py       # Minimax AI (150 lines)
 └── cpp/
     ├── game.h             # Class declaration (30 lines)
-    ├── game.cpp           # Game implementation (250 lines)
+    ├── game.cpp           # Game implementation (300 lines)
     └── Makefile           # Build config
 ```
 
@@ -133,20 +190,6 @@ tic-tac-toe-ai/
 2. Explores all possible game states
 3. Maximizes AI score, minimizes human score
 4. Returns best move
-
-**Pseudocode:**
-```
-function MINIMAX(board, depth, isMaximizing):
-    if game over:
-        return score
-    
-    if AI's turn:
-        try all moves
-        return maximum score
-    else:
-        try all moves
-        return minimum score
-```
 
 **Complexity:**
 - Time: O(9!) ≈ 362,880 states
@@ -166,30 +209,33 @@ function MINIMAX(board, depth, isMaximizing):
 
 ---
 
-## 💻 Code Example
+## 💻 Technical Implementation
 
-```python
-# Python: Find best move
-board = [
-    ['X', 'O', ' '],
-    [' ', 'X', ' '],
-    [' ', ' ', ' ']
-]
+### Input Validation
 
-row, col = ai.find_best_move(board)
-# Returns: (2, 2) - completes diagonal
-```
+Uses `std::getline` and `std::stringstream` for robust input parsing:
 
 ```cpp
-// C++: Validate move
-bool TicTacToe::makeMove(int row, int col, char player) {
-    if(row < 0 || row > 2 || col < 0 || col > 2)
-        return false;
-    if(board[row][col] != EMPTY)
-        return false;
-    board[row][col] = player;
-    return true;
+std::getline(std::cin, input);
+std::stringstream ss(input);
+
+if(!(ss >> row >> col)) {
+    // Handle invalid format
 }
+
+if(ss >> extra) {
+    // Handle too many inputs
+}
+```
+
+### Cross-Platform Compatibility
+
+Uses `system()` with temporary file for Windows/Linux/Mac compatibility:
+
+```cpp
+system("python ai_engine.py \"...\" > ai_output.txt");
+std::ifstream inputFile("ai_output.txt");
+remove("ai_output.txt");
 ```
 
 ---
@@ -200,16 +246,19 @@ bool TicTacToe::makeMove(int row, int col, char player) {
 - ✅ C++ and Python inter-process communication
 - ✅ Game theory and optimal decision-making
 - ✅ Clean code architecture
-- ✅ Error handling and input validation
+- ✅ Comprehensive error handling and input validation
+- ✅ Cross-platform development (Windows/Linux/Mac)
+- ✅ User experience design in CLI applications
 
 ---
 
 ## 🔧 Challenges Solved
 
-1. **Inter-language communication** - Used command-line arguments
+1. **Inter-language communication** - Used system() with temporary files
 2. **Performance** - Depth-based scoring for efficiency
-3. **Input validation** - Comprehensive error handling
-4. **Cross-platform** - Standard C++17 and Python 3
+3. **Input validation** - Comprehensive error handling for all edge cases
+4. **Cross-platform** - Compatible with MinGW, GCC, and Clang
+5. **User experience** - Intuitive 1-3 numbering with clear error messages
 
 ---
 
@@ -218,8 +267,10 @@ bool TicTacToe::makeMove(int row, int col, char player) {
 - [ ] Difficulty levels (Easy, Medium, Hard)
 - [ ] GUI using SDL2 or Qt
 - [ ] Alpha-Beta pruning optimization
-- [ ] Statistics tracking
-- [ ] Unit tests
+- [ ] Undo/Redo functionality
+- [ ] Game statistics and history
+- [ ] Network multiplayer
+- [ ] Save/Load game state
 
 ---
 
@@ -233,7 +284,6 @@ Contributions welcome! Feel free to:
 ```bash
 git clone https://github.com/YOUR_USERNAME/tic-tac-toe-ai.git
 git checkout -b feature/new-feature
-# Make changes
 git commit -m "Add feature"
 git push origin feature/new-feature
 ```
