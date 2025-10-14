@@ -313,7 +313,7 @@ See [LICENSE](LICENSE) for details.
 
 - Minimax algorithm from game theory
 - Inspired by classic AI algorithms
-- [GeeksforGeeks: Minimax](https://www.geeksforgeeks.org/minimax-algorithm-in-game-theory/)
+- [GeeksforGeeks: Minimax](https://www.geeksforgeeks.org/artificial-intelligence/mini-max-algorithm-in-artificial-intelligence/)
 
 ---
 
