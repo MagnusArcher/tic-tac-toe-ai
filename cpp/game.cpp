@@ -1,7 +1,12 @@
 #include "game.h"
 #include <sstream>
 #include <limits>
-#include <cstdio>
+#include <stdio.h>
+
+#if defined(_WIN32) || defined(_WIN64)
+    #define popen _popen
+    #define pclose _pclose
+#endif
 
 TicTacToe::TicTacToe() {
     initBoard();
