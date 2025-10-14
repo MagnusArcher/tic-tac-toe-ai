@@ -19,11 +19,11 @@ void TicTacToe::initBoard() {
 
 void TicTacToe::displayBoard() {
     std::cout << "\n  === TIC TAC TOE ===" << std::endl;
-    std::cout << "     0   1   2" << std::endl;
+    std::cout << "     1   2   3" << std::endl;
     std::cout << "   +---+---+---+" << std::endl;
     
     for(int i = 0; i < 3; i++) {
-        std::cout << " " << i << " | ";
+        std::cout << " " << (i + 1) << " | ";
         for(int j = 0; j < 3; j++) {
             std::cout << board[i][j];
             if(j < 2) std::cout << " | ";
@@ -134,23 +134,45 @@ std::pair<int, int> TicTacToe::getAIMove() {
 
 std::pair<int, int> TicTacToe::getHumanMove() {
     int row, col;
+    std::string input;
     
     while(true) {
-        std::cout << "Your turn (O)! Enter row and column (0-2): ";
-        std::cin >> row >> col;
+        std::cout << "Your turn (O)! Enter row and column (1-3): ";
         
-        if(std::cin.fail()) {
-            std::cin.clear();
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            std::cout << "Invalid input! Please enter numbers." << std::endl;
+        std::getline(std::cin, input);
+        
+        if(input.empty()) {
+            std::cout << "❌ Error: No input provided. Please enter two numbers (e.g., 1 2)" << std::endl;
             continue;
         }
         
-        if(row >= 0 && row <= 2 && col >= 0 && col <= 2 && board[row][col] == EMPTY) {
-            return std::make_pair(row, col);
+        std::stringstream ss(input);
+        
+        if(!(ss >> row >> col)) {
+            std::cout << "❌ Error: Invalid input format. Please enter two numbers separated by space (e.g., 1 2)" << std::endl;
+            continue;
         }
         
-        std::cout << "Invalid move! Cell must be empty and in range 0-2." << std::endl;
+        std::string extra;
+        if(ss >> extra) {
+            std::cout << "❌ Error: Too many inputs. Please enter exactly two numbers (e.g., 1 2)" << std::endl;
+            continue;
+        }
+        
+        if(row < 1 || row > 3 || col < 1 || col > 3) {
+            std::cout << "❌ Error: Numbers must be between 1 and 3. Please try again." << std::endl;
+            continue;
+        }
+        
+        int actualRow = row - 1;
+        int actualCol = col - 1;
+        
+        if(board[actualRow][actualCol] != EMPTY) {
+            std::cout << "❌ Error: Cell (" << row << ", " << col << ") is already occupied. Choose another cell." << std::endl;
+            continue;
+        }
+        
+        return std::make_pair(actualRow, actualCol);
     }
 }
 
@@ -160,7 +182,13 @@ void TicTacToe::playGame() {
     std::cout << "║                                        ║" << std::endl;
     std::cout << "║   You: O  |  AI: X                    ║" << std::endl;
     std::cout << "║   Can you beat the unbeatable AI?     ║" << std::endl;
-    std::cout << "╚════════════════════════════════════════╝\n" << std::endl;
+    std::cout << "╚════════════════════════════════════════╝" << std::endl;
+    std::cout << "\n💡 Instructions:" << std::endl;
+    std::cout << "   - Enter row and column as two numbers (1-3)" << std::endl;
+    std::cout << "   - Example: Type '1 2' and press Enter" << std::endl;
+    std::cout << "   - Row first, then column\n" << std::endl;
+    
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     
     displayBoard();
     
@@ -172,16 +200,21 @@ void TicTacToe::playGame() {
         int hCol = humanMove.second;
         
         makeMove(hRow, hCol, HUMAN);
+        std::cout << "\n✓ You played: (" << (hRow + 1) << ", " << (hCol + 1) << ")" << std::endl;
         displayBoard();
         
         if(checkWin(HUMAN)) {
-            std::cout << "🎉 Congratulations! You won!" << std::endl;
-            std::cout << "   (This shouldn't happen...)" << std::endl;
+            std::cout << "\n╔════════════════════════════════════════╗" << std::endl;
+            std::cout << "║   🎉 CONGRATULATIONS! YOU WON! 🎉    ║" << std::endl;
+            std::cout << "║   (This shouldn't happen...)          ║" << std::endl;
+            std::cout << "╚════════════════════════════════════════╝\n" << std::endl;
             break;
         }
         
         if(isBoardFull()) {
-            std::cout << "🤝 It's a tie! Well played!" << std::endl;
+            std::cout << "\n╔════════════════════════════════════════╗" << std::endl;
+            std::cout << "║   🤝 IT'S A TIE! WELL PLAYED! 🤝      ║" << std::endl;
+            std::cout << "╚════════════════════════════════════════╝\n" << std::endl;
             break;
         }
         
@@ -193,26 +226,30 @@ void TicTacToe::playGame() {
         int aCol = aiMove.second;
         
         if(aRow == -1 || aCol == -1) {
-            std::cerr << "Fatal error: AI failed to make a move!" << std::endl;
+            std::cerr << "\n❌ Fatal error: AI failed to make a move!" << std::endl;
             break;
         }
         
         makeMove(aRow, aCol, AI);
-        std::cout << "🤖 AI played: (" << aRow << ", " << aCol << ")" << std::endl;
+        std::cout << "🤖 AI played: (" << (aRow + 1) << ", " << (aCol + 1) << ")" << std::endl;
         displayBoard();
         
         if(checkWin(AI)) {
-            std::cout << "🤖 AI wins! Better luck next time!" << std::endl;
+            std::cout << "\n╔════════════════════════════════════════╗" << std::endl;
+            std::cout << "║   🤖 AI WINS! BETTER LUCK NEXT TIME!  ║" << std::endl;
+            std::cout << "╚════════════════════════════════════════╝\n" << std::endl;
             break;
         }
         
         if(isBoardFull()) {
-            std::cout << "🤝 It's a tie! Well played!" << std::endl;
+            std::cout << "\n╔════════════════════════════════════════╗" << std::endl;
+            std::cout << "║   🤝 IT'S A TIE! WELL PLAYED! 🤝      ║" << std::endl;
+            std::cout << "╚════════════════════════════════════════╝\n" << std::endl;
             break;
         }
     }
     
-    std::cout << "\nThanks for playing! 🎮\n" << std::endl;
+    std::cout << "Thanks for playing! 🎮\n" << std::endl;
 }
 
 int main() {
