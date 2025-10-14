@@ -99,13 +99,11 @@ C++ Game Engine          Python AI Engine
 
 **C++ → Python:**
 ```cpp
-// Send board state as string: "XO  O X  "
 python3 ai_engine.py "XO  O X  "
 ```
 
 **Python → C++:**
 ```python
-# Return best move: "1,2"
 print(f"{row},{col}")
 ```
 
@@ -278,4 +276,3 @@ See [LICENSE](LICENSE) for details.
 ![Views](https://komarev.com/ghpvc/?username=MagnusArcher&color=58a6ff&style=flat-square)
 
 </div>
-```
