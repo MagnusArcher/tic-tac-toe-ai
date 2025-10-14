@@ -22,3 +22,4 @@ Thumbs.db
 build/
 dist/
 *.egg-info/
+ai_output.txt
