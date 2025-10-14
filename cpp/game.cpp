@@ -1,12 +1,8 @@
 #include "game.h"
 #include <sstream>
 #include <limits>
-#include <stdio.h>
-
-#if defined(_WIN32) || defined(_WIN64)
-    #define popen _popen
-    #define pclose _pclose
-#endif
+#include <fstream>
+#include <cstdlib>
 
 TicTacToe::TicTacToe() {
     initBoard();
@@ -106,26 +102,29 @@ std::string TicTacToe::getBoardString() {
 
 std::pair<int, int> TicTacToe::getAIMove() {
     std::string boardStr = getBoardString();
-    std::string command = "python ../python/ai_engine.py \"" + boardStr + "\"";
+    std::string command = "python ../python/ai_engine.py \"" + boardStr + "\" > ai_output.txt";
     
-    FILE* pipe = popen(command.c_str(), "r");
+    int result = system(command.c_str());
     
-    if(!pipe) {
+    if(result != 0) {
         std::cerr << "Error: Cannot execute Python AI engine!" << std::endl;
         return std::make_pair(-1, -1);
     }
     
-    char buffer[128];
-    std::string result = "";
-    
-    while(fgets(buffer, sizeof(buffer), pipe) != nullptr) {
-        result += buffer;
+    std::ifstream inputFile("ai_output.txt");
+    if(!inputFile.is_open()) {
+        std::cerr << "Error: Cannot read AI output!" << std::endl;
+        return std::make_pair(-1, -1);
     }
     
-    pclose(pipe);
+    std::string line;
+    std::getline(inputFile, line);
+    inputFile.close();
+    
+    remove("ai_output.txt");
     
     int row, col;
-    if(sscanf(result.c_str(), "%d,%d", &row, &col) != 2) {
+    if(sscanf(line.c_str(), "%d,%d", &row, &col) != 2) {
         std::cerr << "Error: Invalid AI response!" << std::endl;
         return std::make_pair(-1, -1);
     }
