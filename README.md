@@ -1,4 +1,3 @@
-```markdown
 # 🎮 Tic-Tac-Toe with Unbeatable AI
 
 <div align="center">
