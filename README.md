@@ -33,6 +33,7 @@ A Tic-Tac-Toe game where you compete against an **AI that never loses**. The AI 
 - 🎯 **Clean UI** - ASCII art terminal interface with clear instructions
 - 💪 **Robust** - Comprehensive input validation and error handling
 - 🎮 **User-Friendly** - Intuitive 1-3 numbering system
+- 🖥️ **Cross-Platform** - Works on Windows, Linux, and macOS
 
 ---
 
@@ -82,14 +83,14 @@ Your turn (O)! Enter row and column (1-3): 2 2
 ### Example Gameplay
 
 ```
-╔════════════════════════════════════════╗
-║   TIC TAC TOE - AI CHALLENGE          ║
-║                                        ║
-║   You: O  |  AI: X                    ║
-║   Can you beat the unbeatable AI?     ║
-╚════════════════════════════════════════╝
++==========================================+
+|   TIC TAC TOE - AI CHALLENGE            |
+|                                          |
+|   You: O  |  AI: X                      |
+|   Can you beat the unbeatable AI?       |
++==========================================+
 
-💡 Instructions:
+[INFO] Instructions:
    - Enter row and column as two numbers (1-3)
    - Example: Type '1 2' and press Enter
    - Row first, then column
@@ -104,10 +105,10 @@ Your turn (O)! Enter row and column (1-3): 2 2
  3 |   |   |   |
    +---+---+---+
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+========================================
 Your turn (O)! Enter row and column (1-3): 2 2
 
-✓ You played: (2, 2)
+[OK] You played: (2, 2)
 
   === TIC TAC TOE ===
      1   2   3
@@ -119,9 +120,19 @@ Your turn (O)! Enter row and column (1-3): 2 2
  3 |   |   |   |
    +---+---+---+
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🤖 AI is thinking...
-🤖 AI played: (1, 1)
+========================================
+[AI] Thinking...
+[AI] AI played: (1, 1)
+
+  === TIC TAC TOE ===
+     1   2   3
+   +---+---+---+
+ 1 | X |   |   |
+   +---+---+---+
+ 2 |   | O |   |
+   +---+---+---+
+ 3 |   |   |   |
+   +---+---+---+
 ```
 
 ### Error Handling
@@ -129,11 +140,11 @@ Your turn (O)! Enter row and column (1-3): 2 2
 The game handles various input errors:
 
 ```
-❌ Error: No input provided
-❌ Error: Invalid input format
-❌ Error: Too many inputs
-❌ Error: Numbers must be between 1 and 3
-❌ Error: Cell is already occupied
+[ERROR] No input provided
+[ERROR] Invalid input format
+[ERROR] Too many inputs
+[ERROR] Numbers must be between 1 and 3
+[ERROR] Cell is already occupied
 ```
 
 ---
@@ -238,6 +249,14 @@ std::ifstream inputFile("ai_output.txt");
 remove("ai_output.txt");
 ```
 
+### ASCII-Only Output
+
+All output uses standard ASCII characters for maximum compatibility across different terminal types and operating systems:
+
+- No Unicode box-drawing characters
+- No emoji symbols
+- Clear text-based indicators (`[INFO]`, `[OK]`, `[ERROR]`, `[AI]`)
+
 ---
 
 ## 🎓 What I Learned
@@ -249,6 +268,7 @@ remove("ai_output.txt");
 - ✅ Comprehensive error handling and input validation
 - ✅ Cross-platform development (Windows/Linux/Mac)
 - ✅ User experience design in CLI applications
+- ✅ ASCII-compatible terminal output
 
 ---
 
@@ -259,6 +279,7 @@ remove("ai_output.txt");
 3. **Input validation** - Comprehensive error handling for all edge cases
 4. **Cross-platform** - Compatible with MinGW, GCC, and Clang
 5. **User experience** - Intuitive 1-3 numbering with clear error messages
+6. **Terminal compatibility** - ASCII-only output for universal support
 
 ---
 
@@ -271,6 +292,7 @@ remove("ai_output.txt");
 - [ ] Game statistics and history
 - [ ] Network multiplayer
 - [ ] Save/Load game state
+- [ ] Color support with fallback
 
 ---
 
@@ -313,7 +335,7 @@ See [LICENSE](LICENSE) for details.
 
 - Minimax algorithm from game theory
 - Inspired by classic AI algorithms
-- [GeeksforGeeks: Minimax](https://www.geeksforgeeks.org/artificial-intelligence/mini-max-algorithm-in-artificial-intelligence/)
+- [GeeksforGeeks: Minimax Algorithm](https://www.geeksforgeeks.org/artificial-intelligence/mini-max-algorithm-in-artificial-intelligence/)
 
 ---
 
